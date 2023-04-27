@@ -7,6 +7,10 @@ const app = express();
 const port = 3000;
 
 const route = require('./routes');
+const db = require('./config/db');
+
+// Connnect to database
+db.connect();
 
 app.use(
     express.urlencoded({
@@ -24,11 +28,11 @@ app.use(morgan('dev'));
 // Template engine`
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'resources/views'));
+app.set('views', path.join(__dirname, 'resources', 'views'));
 
 // Route init
 route(app);
 
 app.listen(port, () => {
-    console.log(`Example app listening on http://localhost:${port}`);
+    console.log(`App listening on http://localhost:${port}`);
 });
