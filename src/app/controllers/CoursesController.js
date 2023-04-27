@@ -6,7 +6,19 @@ class CourseController {
         Course.findOne({ slug: req.params.slug })
             .then((course) => res.render('courses/show', { course: monggoseToObject(course) }))
             .catch(next);
-        // res.render('courses/show');
+    }
+    // [GET] /courses/create
+    create(req, res, next) {
+        res.render('courses/create');
+    }
+
+    // [POST] /courses/store
+    store(req, res, next) {
+        const course = new Course(req.body);
+        course
+            .save()
+            .then(() => res.redirect('/'))
+            .catch((error) => {});
     }
 }
 
