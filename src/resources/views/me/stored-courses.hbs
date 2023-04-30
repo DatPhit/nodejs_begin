@@ -1,0 +1,72 @@
+<div class='mt-4'>
+    <h3>Khóa học của tôi</h3>
+
+    <table class='table mt-4'>
+        <thead>
+            <tr>
+                <th scope='col'>#</th>
+                <th scope='col'>Tên khóa học</th>
+                <th scope='col'>Số người học</th>
+                <th scope='col'>Thời gian cập nhật</th>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+                <tr>
+                    <th scope='row'>{{sum @index 1}}</th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.numbers_studied}}</td>
+                    <td>{{this.updatedAt}}</td>
+                    <td>
+                        <a href='/courses/{{this._id}}/edit' class='btn btn-primary'>Sửa</a>
+                        <a
+                            href=''
+                            class='btn btn-danger'
+                            data-bs-toggle='modal'
+                            data-bs-target='#delete-course-modal'
+                            data-bs-id='{{this._id}}'
+                        >Xóa</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+{{! Dialog when delete btn clicked }}
+<!-- Modal -->
+<div
+    class='modal fade'
+    id='delete-course-modal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Xóa khóa học?</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                Bạn có chắc chắn muốn xóa khóa học này không?
+            </div>
+            <div class='modal-footer'>
+                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Hủy</button>
+                <button type='button' class='btn btn-danger'>Xóa bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteCourseBtn = document.getElementById('delete-course-modal');
+    deleteCourseBtn.addEventListener('show.bs.modal', event => { const button = event.relatedTarget;
+    const courseId = button.getAttribute('data-bs-id'); console.log(courseId) })
+</script>
