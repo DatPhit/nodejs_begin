@@ -1,7 +1,7 @@
 <div class='mt-4'>
     <div>
-        <h3>Khóa học của tôi</h3>
-        <a href='/me/trash/courses'>Thùng rác ({{countDeleted}})</a>
+        <a href='/me/stored/courses'>Danh sách khóa học</a>
+        <h3>Khóa học đã xóa</h3>
     </div>
 
     <table class='table mt-4'>
@@ -10,7 +10,7 @@
                 <th scope='col'>#</th>
                 <th scope='col'>Tên khóa học</th>
                 <th scope='col'>Số người học</th>
-                <th scope='col'>Thời gian cập nhật</th>
+                <th scope='col'>Thời gian xoá</th>
                 <td></td>
             </tr>
         </thead>
@@ -22,21 +22,21 @@
                     <td>{{this.numbers_studied}}</td>
                     <td>{{this.updatedAt}}</td>
                     <td>
-                        <a href='/courses/{{this._id}}/edit' class='btn btn-primary'>Sửa</a>
+                        <a class='btn btn-primary btn-restore' data-id='{{this._id}}'>Khôi phục</a>
                         <a
                             href=''
                             class='btn btn-danger'
                             data-bs-toggle='modal'
                             data-bs-target='#delete-course-modal'
                             data-bs-id='{{this._id}}'
-                        >Xóa</a>
+                        >Xóa vĩnh viễn</a>
                     </td>
                 </tr>
             {{else}}
                 <tr>
                     <td colspan='5' class='text-center'>
-                        Bạn chưa đăng khóa học nào.
-                        <a href='/courses/create'> Đăng khóa học ngay</a>
+                        Thùng rác trống.
+                        <a href='/me/stored/courses'> Danh sách khóa học</a>
                     </td>
                 </tr>
             {{/each}}
@@ -65,35 +65,48 @@
                 ></button>
             </div>
             <div class='modal-body'>
-                Bạn có chắc chắn muốn xóa khóa học này không?
+                Hành động này không thể khôi phục. Bạn có chắc chắn muốn xóa khóa học này không?
             </div>
             <div class='modal-footer'>
                 <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Hủy</button>
-                <button id='delete-btn' type='button' class='btn btn-danger'>Xóa bỏ</button>
+                <button id='delete-btn' type='button' class='btn btn-danger'>Xóa vĩnh viễn</button>
             </div>
         </div>
     </div>
 </div>
 
-{{! DELETE form }}
-<form method='POST' name='delete-course-form'></form>
+<form method='POST' name='restore-course-form'></form>
+<form method='POST' name='delete-force-course-form'></form>
 
 {{! prettier-ignore }}
 <script>
-    const deleteCourseBtn = document.getElementById('delete-course-modal'); 
+    const deleteCourseBtn = document.getElementById('delete-course-modal');
+
     const deleteBtn = document.getElementById('delete-btn');
-    const deleteForm = document.forms['delete-course-form'];
-    
+    const restoreForm = document.forms['restore-course-form'];
+    const deleteForceForm = document.forms['delete-force-course-form'];
+    let courseId;
+    const restoresBtn = document.querySelectorAll('.btn-restore');
+
     {{! When dialog confirmm show }}
     deleteCourseBtn.addEventListener('show.bs.modal', (event) => {
-        const button = event.relatedTarget; 
-        const courseId = button.getAttribute('data-bs-id');
-        
-        deleteBtn.onclick = () => { 
-            deleteForm.action = '/courses/' + courseId + '?_method=DELETE';
-            deleteForm.submit();
-        }
+        const button = event.relatedTarget;
+        courseId = button.getAttribute('data-bs-id');
+
+        deleteBtn.onclick = () => {
+            deleteForceForm.action = `/courses/${courseId}/force?_method=DELETE`; 
+            deleteForceForm.submit();
+        } 
     });
 
+    {{! Restore course }}
+    restoresBtn.forEach(restoreBtn => { 
+        restoreBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            courseId = restoreBtn.dataset.id;
+            restoreForm.action = `/courses/${courseId}/restore?_method=PATCH`;
+            restoreForm.submit(); 
+        })
+    })
 
 </script>
