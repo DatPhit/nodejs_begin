@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 const Course = new Schema(
     {
         name: { type: String, required: true },
-        numbers_studied: { type: String },
+        numbers_studied: { type: Number },
         description: { type: String },
         videoId: { type: String, required: true },
         image: { type: String },

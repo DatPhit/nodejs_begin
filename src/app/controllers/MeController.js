@@ -3,8 +3,16 @@ const { multipleMongooseToObject } = require('../../util/monggoose');
 class MeController {
     // [GET] /me/stored/courses
     async storedCourses(req, res, next) {
+        let courseQuery = Course.find({});
+
+        if (req.query.hasOwnProperty('_sort')) {
+            courseQuery = courseQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
         try {
-            const courses = await Course.find({});
+            const courses = await courseQuery;
             const countDeleted = await Course.countDocumentsDeleted();
 
             res.render('me/stored-courses', {
